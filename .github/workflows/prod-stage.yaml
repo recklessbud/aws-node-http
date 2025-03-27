@@ -28,16 +28,29 @@ jobs:
       run: echo "SERVERLESS_ACCESS_KEY=${{ secrets.SERVERLESS_ACCESS_KEY }}" >> $GITHUB_ENV
     - name: Install dependencies
       run: npm install --force --legacy-peer-deps
-    - name: Get Database URL
-      run: export "DATABASE_URL=$(aws ssm get-parameter --name "/serverless-demo/prod/database-url" --with-decryption --query "Parameter.Value" --output text)" >> $GITHUB_ENV
+      - name: Get Database URL
+      run: |
+        echo "DATABASE_URL=$(aws ssm get-parameter --name "/serverless-demo/prod/database-url" --with-decryption --query "Parameter.Value" --output text)" >> $GITHUB_ENV
     - name: Get direct URL
-      run: export "DIRECT_URL=$(aws ssm get-parameter --name "/serverless-demo/prod/direct-url" --with-decryption --query "Parameter.Value" --output text)" >> $GITHUB_ENV   
-    - name: DATABASE_URL
-      run: echo $env:DATABASE_URL
-    - name: DIRECT_URL
-      run: echo $env:DIRECT_URL
+      run: |
+        echo "DIRECT_URL=$(aws ssm get-parameter --name "/serverless-demo/prod/direct-url" --with-decryption --query "Parameter.Value" --output text)" >> $GITHUB_ENV
+    - name: Verify Environment Variables
+      run: |
+        echo "Checking DATABASE_URL..."
+        if [ -z "$DATABASE_URL" ]; then
+          echo "DATABASE_URL is empty"
+          exit 1
+        fi
+        echo "Checking DIRECT_URL..."
+        if [ -z "$DIRECT_URL" ]; then
+          echo "DIRECT_URL is empty"
+          exit 1
+        fi
     - name: Run migrations
-      run: | 
-        npx prisma migrate deploy --name init
+      env:
+        DATABASE_URL: ${{ env.DATABASE_URL }}
+        DIRECT_URL: ${{ env.DIRECT_URL }}
+      run: |
+        npx dotenv -e .env.dev -- prisma migrate dev --name init
     - name: Deploy
       run: npm run deploy:prod
