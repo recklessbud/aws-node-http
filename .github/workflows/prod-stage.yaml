@@ -29,11 +29,15 @@ jobs:
     - name: Install dependencies
       run: npm install --force --legacy-peer-deps
     - name: Get Database URL
-      run: echo "DATABASE_URL=$(aws ssm get-parameter --name "/serverless-demo/prod/database-url" --with-decryption --query "Parameter.Value" --output text)" >> $GITHUB_ENV
+      run: export "DATABASE_URL=$(aws ssm get-parameter --name "/serverless-demo/prod/database-url" --with-decryption --query "Parameter.Value" --output text)" >> $GITHUB_ENV
     - name: Get direct URL
-      run: echo "DIRECT_URL=$(aws ssm get-parameter --name "/serverless-demo/prod/direct-url" --with-decryption --query "Parameter.Value" --output text)" >> $GITHUB_ENV   
+      run: export "DIRECT_URL=$(aws ssm get-parameter --name "/serverless-demo/prod/direct-url" --with-decryption --query "Parameter.Value" --output text)" >> $GITHUB_ENV   
+    - name: DATABASE_URL
+      run: echo $env:DATABASE_URL
+    - name: DIRECT_URL
+      run: echo $env:DIRECT_URL
     - name: Run migrations
       run: | 
-        npx prisma migrate deploy
+        npx prisma migrate deploy --name init
     - name: Deploy
       run: npm run deploy:prod
