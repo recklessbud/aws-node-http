@@ -28,7 +28,7 @@ jobs:
       run: echo "SERVERLESS_ACCESS_KEY=${{ secrets.SERVERLESS_ACCESS_KEY }}" >> $GITHUB_ENV
     - name: Install dependencies
       run: npm install --force --legacy-peer-deps
-      - name: Get Database URL
+    - name: Get Database URL
       run: |
         echo "DATABASE_URL=$(aws ssm get-parameter --name "/serverless-demo/prod/database-url" --with-decryption --query "Parameter.Value" --output text)" >> $GITHUB_ENV
     - name: Get direct URL
