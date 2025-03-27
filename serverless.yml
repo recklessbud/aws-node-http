@@ -1,0 +1,99 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: bureck
+# "service" is the name of this project. This will also be added to your AWS resource names.
+app: aws-node-http-start
+service: aws-node-http-start
+useDotenv: true
+
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  stage: dev
+  region: us-east-1
+  tracing:
+    apiGateway: true
+    lambda: true
+  memorySize: 512
+  timeout: 20
+  httpApi:
+    cors: true
+    binaryMediaTypes:
+      - "*/*"
+  apiGateway:
+    metrics: true
+    shouldStartNameWithService: true
+    minimumCompressionSize: 1024
+  environment:
+    STAGE: ${env:STAGE, 'prod'}
+
+  iam:
+    role:
+      name: serverless-ssm-role-${env:STAGE, 'prod'}
+      statements:
+        - Effect: Allow
+          Action:
+            - "ssm:DescribeParameters"
+            - "ssm:GetParameter"
+            - "ssm:GetParameterHistory"
+            - "ssm:GetParametersByPath"
+            - "ssm:GetParameters"
+          Resource: "*"
+
+
+functions:
+  hello:
+    handler: src/index.handler
+    events: 
+    - httpApi: "*"
+    timeout: 10
+    memorySize: 256
+    tags:
+      Function: hello
+
+package:
+  individually: true
+  include:
+    - src/views/**
+    - src/views/**/**
+    - node_modules/ejs/**
+  patterns:
+    - "!src/**/*.test.ts"
+    - "!src/**/*.spec.ts"
+    - "!src/**/*.test.js"
+    - "!src/**/__tests__/**"
+    - "!src/**/__mocks__/**"
+    - "!.git/**"
+    - "!.vscode/**"
+    # - "!node_modules/**
+    - "!test/**"
+    - "!tests/**"
+
+plugins:
+  - serverless-offline
+  - serverless-static
+  - serverless-plugin-static
+  - serverless-dotenv-plugin
+
+custom:
+  serverless-offline:
+    httpPort: 4000
+    lambdaPort: 4002
+    noPrependStageInUrl: true
+    reloadHandler: true
+  dotenv:
+    exclude:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+
+  esbuild:
+    bundle: true
+    minify: false
+    sourceMap: linked
+    exclude:
+      - aws-sdk
+    target: node20
+    platform: node
+    concurrency: 10
+
+

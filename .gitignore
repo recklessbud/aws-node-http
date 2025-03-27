@@ -1,0 +1,14 @@
+node_modules
+.serverless
+undefined
+.env
+coverage
+.early.json
+build
+.early.coverage
+migrations
+.env*
+tests
+.env.dev
+.env.prod
+.github
