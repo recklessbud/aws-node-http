@@ -11,4 +11,3 @@ migrations
 tests
 .env.dev
 .env.prod
-.github
