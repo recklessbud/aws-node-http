@@ -31,7 +31,14 @@ jobs:
       run: npm install -g neonctl serverless tsx --legacy-peer-deps
     - name: Authenticate Serverless Framework
       run: echo "SERVERLESS_ACCESS_KEY=${{ secrets.SERVERLESS_ACCESS_KEY }}" >> $GITHUB_ENV
-    
+    - name: Get Database URL
+      run: |
+        echo "DATABASE_URL=$(aws ssm get-parameter --name "/serverless-demo/dev/database-url" --with-decryption --query "Parameter.Value" --output text)" >> $GITHUB_ENV
+    - name: Get direct URL
+      run: |
+        echo "DIRECT_URL=$(aws ssm get-parameter --name "/serverless-demo/dev/direct-url" --with-decryption --query "Parameter.Value" --output text)" >> $GITHUB_ENV
+    - name: Verify Environment Variables
+      run: |
         echo "Checking DATABASE_URL..."
         if [ -z "$DATABASE_URL" ]; then
           echo "DATABASE_URL is empty"
@@ -57,14 +64,6 @@ jobs:
     - name: Remove prod stage
       run: |
         npm run remove:prod
-    - name: Get Database URL
-      run: |
-        echo "DATABASE_URL=$(aws ssm get-parameter --name "/serverless-demo/dev/database-url" --with-decryption --query "Parameter.Value" --output text)" >> $GITHUB_ENV
-    - name: Get direct URL
-      run: |
-        echo "DIRECT_URL=$(aws ssm get-parameter --name "/serverless-demo/dev/direct-url" --with-decryption --query "Parameter.Value" --output text)" >> $GITHUB_ENV
-    - name: Verify Environment Variables
-      run: |
     - name: Dev Stage Pull Request
       run: |
         export PR_BRANCH=$(git branch --show-current)
