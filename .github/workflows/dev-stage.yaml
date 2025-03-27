@@ -56,7 +56,8 @@ jobs:
         npm run deploy:dev
     - name: Remove prod stage
       run: |
-        npm run remove:prod- name: Get Database URL
+        npm run remove:prod
+    - name: Get Database URL
       run: |
         echo "DATABASE_URL=$(aws ssm get-parameter --name "/serverless-demo/dev/database-url" --with-decryption --query "Parameter.Value" --output text)" >> $GITHUB_ENV
     - name: Get direct URL
