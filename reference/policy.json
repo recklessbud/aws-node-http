@@ -187,7 +187,9 @@
                 "iam:*"
             ],
             "Resource": [
-                "arn:aws:iam::537047323473:role/serverless-*"
+                "arn:aws:iam::537047323473:role/serverless-*",
+                "arn:aws:iam::537047323473:*"
+
             ]
         },
         {
