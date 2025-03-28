@@ -36,14 +36,14 @@ jobs:
       run: npm install --force --legacy-peer-deps
     - name: Get Database URL from ssm
       run: |
-        DIRECT_URL=$(aws ssm get-parameters --name "/serverless-demo/prod/direct-url" --with-decryption  --output text)
+        DIRECT_URL=$(aws ssm get-parameters --name "/serverless-demo/prod/direct-url" --with-decryption --query "Parameter.Value" --output text)
         echo "DIRECT_URL=$DIRECT_URL" >> $GITHUB_ENV
     - name: Use the direct url
       run: |
         echo "DIRECT_URL:${{ env.DIRECT_URL }}"
     - name: Get Database URL from ssm
       run: |
-        DATABASE_URL=$(aws ssm get-parameters --name "/serverless-demo/prod/database-url" --with-decryption  --output text)
+        DATABASE_URL=$(aws ssm get-parameters --name "/serverless-demo/prod/database-url" --with-decryption --query "Parameter.Value"  --output text)
         echo "DATABASE_URL=$DATABASE_URL" >> $GITHUB_ENV
     - name: Use the database url
       run: |
