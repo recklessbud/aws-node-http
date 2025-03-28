@@ -29,7 +29,7 @@ provider:
 
   iam:
     role:
-      name: serverless-ssm-role-${env:STAGE, 'prod'}
+      name:  ${self:service}-lambda-role-${env:STAGE, 'prod'}
       statements:
         - Effect: Allow
           Action:

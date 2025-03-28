@@ -6,8 +6,8 @@
   "scripts": {
     "test": "cross-env STAGE=dev jest --verbose --watchAll --coverage",
     "dev": " cross-env STAGE=dev nodemon --stage dev",
-    "deploy:dev": "serverless deploy --stage dev --verbose",
-    "deploy:prod": "serverless deploy --stage prod --verbose",
+    "deploy:dev": "serverless deploy --stage dev",
+    "deploy:prod": "serverless deploy --stage prod",
     "build": "tsc && copyfiles -u 1 \"views/**/*\"  .serverless/build/",
     "debug": "cross-env STAGE=dev SLS_DEBUG=* serverless offline --httpPort 4000 --lambdaPort 4002 --verbose",
     "remove:dev": "serverless remove --stage dev --verbose",
