@@ -39,7 +39,8 @@
                 "lambda:List*",
                 "lambda:CreateFunction",
                 "lambda:TagResource",
-                "lambda:UntagResource"
+                "lambda:UntagResource",
+                "lambda:RemovePermission"
             ],
             "Resource": [
                 "*"
