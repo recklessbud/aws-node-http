@@ -7,6 +7,7 @@
                 "cloudformation:List*",
                 "cloudformation:Get*",
                 "cloudformation:ValidateTemplate",
+                "cloudformation:*",
                 "ssm:*"
             ],
             "Resource": [
@@ -24,7 +25,8 @@
                 "cloudformation:CreateChangeSet",
                 "cloudformation:ListChangeSets",
                 "cloudformation:DeleteChangeSet",
-                "cloudformation:ExecuteChangeSet"
+                "cloudformation:ExecuteChangeSet",
+                "cloudformation:*"
             ],
             "Resource": [
                 "arn:aws:cloudformation:*:537047323473:stack/serverless-*"
