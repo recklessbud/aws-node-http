@@ -168,7 +168,8 @@
         {
             "Effect": "Allow",
             "Action": [
-                "iam:PassRole"
+                "iam:PassRole",
+                "iam:*"
             ],
             "Resource": [
                 "arn:aws:iam::537047323473:role/serverless-*"
@@ -182,7 +183,8 @@
                 "iam:TagRole",
                 "iam:PutRolePolicy",
                 "iam:DeleteRolePolicy",
-                "iam:DeleteRole"
+                "iam:DeleteRole",
+                "iam:*"
             ],
             "Resource": [
                 "arn:aws:iam::537047323473:role/serverless-*"
