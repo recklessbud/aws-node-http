@@ -37,6 +37,6 @@ jobs:
         DATABASE_URL: $DATABASE_URL
         DIRECT_URL: $DIRECT_URL
       run: |
-         npx -y dotenv -e .env.prod --npx prisma migrate deploy  
+         npx prisma migrate deploy  
     - name: Deploy
       run: npm run deploy:prod

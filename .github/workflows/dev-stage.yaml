@@ -41,7 +41,7 @@ jobs:
         DATABASE_URL: $DATABASE_URL
         DIRECT_URL: $DIRECT_URL
       run: |
-         npx -y dotenv -e .env.dev --npx prisma migrate dev --name init 
+         npx prisma migrate dev --name init 
     - name: Remove dev stage
       run: |
         npm run remove:dev
