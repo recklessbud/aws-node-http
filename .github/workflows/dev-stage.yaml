@@ -19,6 +19,12 @@ jobs:
     - uses: actions/checkout@v4
       with:
           fetch-depth: 0 
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
     - name: Use Node.js
       uses: actions/setup-node@v4
       with:
@@ -32,16 +38,23 @@ jobs:
       run: npm install -g neonctl serverless tsx --legacy-peer-deps
     - name: Authenticate Serverless Framework
       run: echo "SERVERLESS_ACCESS_KEY=${{ secrets.SERVERLESS_ACCESS_KEY }}" >> $GITHUB_ENV        
-    - name: Get direct URL
+    - name: Get Database URL from ssm
       run: |
-        echo "DATABASE_URL=$(aws ssm get-parameter --name "/serverless-demo/dev/database-url" --with-decryption --query "Parameter.Value" --output text)" >> $GITHUB_ENV
-        echo "DIRECT_URL=$(aws ssm get-parameter --name "/serverless-demo/dev/direct-url" --with-decryption --query "Parameter.Value" --output text)" >> $GITHUB_ENV
-    - name: Run migrations
-      env:
-        DATABASE_URL: ${{ env.DATABASE_URL }}
-        DIRECT_URL: ${{ env.DIRECT_URL }}
+        DIRECT_URL=$(aws ssm get-parameters --name "/serverless-demo/dev/direct-url" --with-decryption  --output text)
+        echo "DIRECT_URL=$DIRECT_URL" >> $GITHUB_ENV
+    - name: Use the direct url
       run: |
-         npx prisma migrate dev --name init 
+        echo "DIRECT_URL:${{ env.DIRECT_URL }}"
+    - name: Get Database URL from ssm
+      run: |
+        DATABASE_URL=$(aws ssm get-parameters --name "/serverless-demo/dev/database-url" --with-decryption  --output text)
+        echo "DATABASE_URL=$DATABASE_URL" >> $GITHUB_ENV
+    - name: Use the database url
+      run: |
+        echo "DATABASE_URL:${{ env.DATABASE_URL }}"
+    - name: Run Migrations
+      run: |
+        npx prisma migrate deploy
     - name: Remove dev stage
       run: |
         npm run remove:dev
