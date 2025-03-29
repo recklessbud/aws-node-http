@@ -37,7 +37,9 @@ jobs:
     - name: Install neonctl, serverless and tsx
       run: npm install -g neonctl serverless tsx --legacy-peer-deps
     - name: Authenticate Serverless Framework
-      run: echo "SERVERLESS_ACCESS_KEY=${{ secrets.SERVERLESS_ACCESS_KEY }}" >> $GITHUB_ENV        
+      run: echo "SERVERLESS_ACCESS_KEY=${{ secrets.SERVERLESS_ACCESS_KEY }}" >> $GITHUB_ENV 
+    - name: Prisma generate
+      run: npx prisma generate
     - name: Get Database URL from ssm
       run: |
         DIRECT_URL=$(aws ssm get-parameters --name "/serverless-demo/dev/direct-url" --with-decryption  --query "Parameters[0].Value" --output text)
