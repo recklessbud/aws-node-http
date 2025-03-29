@@ -54,9 +54,8 @@ functions:
 package:
   individually: true
   include:
-    - src/views/**
-    - src/views/**/**
-    - node_modules/ejs/**
+    - node_modules/.prisma/client/**
+    - node_modules/prisma/**
   patterns:
     - "!src/**/*.test.ts"
     - "!src/**/*.spec.ts"
