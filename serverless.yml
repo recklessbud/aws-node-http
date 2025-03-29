@@ -52,14 +52,12 @@ functions:
       Function: hello
 
 package:
-  individually: true
-  include:
-    - node_modules/.prisma/client/**
-    - node_modules/prisma/**
-    - node_modules/@prisma/client/**
-    - .prisma/**
-    - prisma/**
   patterns:
+    - '!node_modules/.prisma/client/libquery_engine-*'
+    - 'node_modules/.prisma/client/libquery_engine-rhel-*'
+    - '!node_modules/prisma/libquery_engine-*'
+    - '!node_modules/@prisma/engines/**'
+    - '!node_modules/.cache/prisma/**' 
     - "!src/**/*.test.ts"
     - "!src/**/*.spec.ts"
     - "!src/**/*.test.js"

@@ -60,6 +60,9 @@ jobs:
     - name: Remove dev stage
       run: |
         npm run remove:dev
+    - name: serverless package
+      run: |
+        npm run package:dev
     - name: Deploy dev stage
       run: |
         npm run deploy:dev

@@ -6,6 +6,8 @@
   "scripts": {
     "test": "cross-env STAGE=dev jest --verbose --watchAll --coverage",
     "dev": " cross-env STAGE=dev nodemon --stage dev",
+    "package:dev": "cross-env STAGE=dev serverless package --stage dev",
+    "package:prod": "cross-env STAGE=prod serverless package --stage prod",
     "deploy:dev": "serverless deploy --stage dev",
     "deploy:prod": "serverless deploy --stage prod",
     "build": "tsc && copyfiles -u 1 \"views/**/*\"  .serverless/build/",
@@ -14,7 +16,8 @@
     "remove:prod": "serverless remove --stage prod --verbose",
     "prisma:dev": "npx -y dotenv-cli -e .env.dev --npx prisma",
     "prisma:generate": "npx prisma generate",
-    "prisma:studio": "npm run prisma:dev studio"
+    "prisma:studio": "npm run prisma:dev studio",
+    "info:dev": "serverless info --stage dev"
   },
   "keywords": [],
   "author": "",
