@@ -56,6 +56,9 @@ package:
   include:
     - node_modules/.prisma/client/**
     - node_modules/prisma/**
+    - node_modules/@prisma/client/**
+    - .prisma/**
+    - prisma/**
   patterns:
     - "!src/**/*.test.ts"
     - "!src/**/*.spec.ts"
