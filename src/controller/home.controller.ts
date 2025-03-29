@@ -3,8 +3,17 @@ import {successResponse , errorResponse} from '../utils/responses.util'
 import { prismaDb } from "../lib/intializePrisma";
 // import prisma from "../config/database.config
 
-export const homePage = (req: Request, res: Response, next: NextFunction) => {
-    return successResponse(res, 200).render('index');
+export const homePage = async(req: Request, res: Response, next: NextFunction) => {
+  try {
+    const prisma = await prismaDb();
+    const data = await prisma.url.findMany();
+    successResponse(res, 200).json({message:'Reviewed from database', data:data});
+    return;
+  } catch (error) {
+    console.error(error)
+    errorResponse(res, 500).json({ error: 'Internal Server Error' });
+    return
+  }
  
 }
 
