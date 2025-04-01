@@ -7,7 +7,7 @@ export const homePage = async(req: Request, res: Response, next: NextFunction) =
   try {
     const prisma = await prismaDb();
     const data = await prisma.url.findMany();
-    successResponse(res, 200).json({message:'Reviewed from database', data:data});
+    successResponse(res, 200).render("index");
     return;
   } catch (error) {
     console.error(error)

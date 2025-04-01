@@ -68,6 +68,8 @@ package:
     # - "!node_modules/**
     - "!test/**"
     - "!tests/**"
+    - "src/views/**"
+    - "src/views/**/*.ejs"
 
 plugins:
   - serverless-offline
