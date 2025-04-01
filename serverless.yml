@@ -69,6 +69,7 @@ package:
     - "!test/**"
     - "!tests/**"
     - "src/views/**"
+    - "node_modules/ejs/**"
     - "src/views/**/*.ejs"
 
 plugins:
