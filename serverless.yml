@@ -69,7 +69,9 @@ package:
     - "!test/**"
     - "!tests/**"
     - "src/views/**"
+    - "node_modules/ejs/**"
     - "src/views/**/*.ejs"
+    - "src/views/*/**"
 
 plugins:
   - serverless-offline
