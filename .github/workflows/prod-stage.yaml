@@ -50,7 +50,7 @@ jobs:
         echo "DATABASE_URL:${{ env.DATABASE_URL }}"
     - name: Run Migrations
       run: |
-        npx prisma migrate reset --force
+        npx prisma migrate dev --name init --force 
     - name: serverless package
       run: |
         npm run package:prod
