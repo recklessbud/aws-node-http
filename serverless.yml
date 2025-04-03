@@ -72,6 +72,10 @@ package:
     - "node_modules/ejs/**"
     - "src/views/**/*.ejs"
     - "src/views/*/**"
+    - "node_modules/ajv/**"
+    - "node_modules/json-schema-traverse/**"
+    - "node_modules/fast-deep-equal/**"
+    - "node_modules/uri-js/**"
 
 plugins:
   - serverless-offline
