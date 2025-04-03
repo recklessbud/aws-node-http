@@ -19,6 +19,8 @@ datasource db {
 
 model Url {
   id String @id @default(uuid())
-  originalUrl String
-  food String?
+  longUrl String
+  shortUrl String @unique
+  createdAt DateTime @default(now())
 }
+
