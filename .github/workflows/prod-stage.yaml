@@ -57,3 +57,4 @@ jobs:
         npm run package:prod
     - name: Deploy
       run: npm run deploy:prod
+ 
