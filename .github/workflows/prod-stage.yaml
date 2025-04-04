@@ -51,7 +51,7 @@ jobs:
     - name: Run Migrations
       run: |
         npx prisma generate
-        npx prisma migrate dev
+        npx prisma migrate deploy
     - name: serverless package
       run: |
         npm run package:prod
