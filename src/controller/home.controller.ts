@@ -1,11 +1,14 @@
 import { Request, Response, NextFunction } from "express";
 import { successResponse, errorResponse } from '../utils/responses.util';
 import { prismaDb } from "../lib/intializePrisma";
+import envVariables from "../config/env.config";
 
+const { REDIS_HOST } = envVariables;
 export const homePage = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const prisma = await prismaDb();
     successResponse(res, 200).render("index", {shortUrl: null });
+   
   } catch (error) {
     console.error('HomePage Error:', error);
     errorResponse(res, 500).json({ error: 'Internal Server Error' });
@@ -24,11 +27,11 @@ export const postToDb = async (req: Request, res: Response, next: NextFunction) 
     const trimmedUrl = longUrl.trim();
 
     const existingUrl = await prisma.url.findFirst({
-      where: { longUrl: trimmedUrl }
+      where: { longUrl: longUrl }
     });
 
     if (existingUrl) {
-     errorResponse(res, 200).render("index", {shortUrl: `${req.protocol}://${req.get('host')}/v1/${existingUrl.shortUrl}` })
+     errorResponse(res, 400).render("index", {shortUrl: `${req.protocol}://${req.get('host')}/v1/${existingUrl.shortUrl}` })
     }
 
     const shortenedUrl = Math.random().toString(36).substring(2, 8);
@@ -48,16 +51,16 @@ export const postToDb = async (req: Request, res: Response, next: NextFunction) 
 }
 
 export const redirectToLongUrl = async (req: Request, res: Response, next: NextFunction) => {
-  const { shortUrl } = req.params;
+  const { shortId } = req.params;
 
-  if (!shortUrl) {
+  if (!shortId) {
     errorResponse(res, 400).json({ error: 'Short URL parameter is required' });
   }
 
   try {
     const prisma = await prismaDb();
     const url = await prisma.url.findFirst({
-      where: { shortUrl }
+      where: { shortUrl: shortId }
     });
 
     if (!url) {

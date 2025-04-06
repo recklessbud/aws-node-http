@@ -24,8 +24,18 @@ provider:
     metrics: true
     shouldStartNameWithService: true
     minimumCompressionSize: 1024
+  vpc:
+    securityGroupIds:
+      - sg-0bf6a786b11fd7759
+    subnetIds:
+      - subnet-087266d83f29b6de9 
+      - subnet-0a0739c11d57b4739  
+      - subnet-091b18809567a60f5
   environment:
     STAGE: ${env:STAGE, 'prod'}
+    ELASTICACHE_REDIS_URL: ${env:ELASTICACHE_REDIS_URL}
+    REDIS_HOST: ${env:REDIS_HOST}
+    REDIS_PORT: ${env:REDIS_PORT}
 
   iam:
     role:
@@ -84,6 +94,7 @@ plugins:
   - serverless-dotenv-plugin
 
 custom:
+  
   serverless-offline:
     httpPort: 4000
     lambdaPort: 4002
@@ -103,5 +114,4 @@ custom:
     target: node20
     platform: node
     concurrency: 10
-
 
