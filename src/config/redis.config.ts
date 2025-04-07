@@ -34,7 +34,7 @@ if (envVariables.STAGE === 'prod') {
 
   redisClient.connect().then(() => {
     console.log('Redis client connected locally');
-  });
+  });  
 }
 
 export default redisClient;
