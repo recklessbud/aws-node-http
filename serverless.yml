@@ -48,6 +48,8 @@ provider:
             - "logs:PutLogEvents"
           Resource: "*"
   vpc:
+    vpcId: 
+      - vpc-0a0c3f0ca1e6e6a01
     securityGroupIds:
       - sg-0bf6a786b11fd7759
       - sg-0c6546935ce0a182d
