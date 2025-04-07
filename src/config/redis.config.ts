@@ -12,16 +12,18 @@ if (envVariables.STAGE === 'prod') {
         port: 6379,
       },
     ],
-    {
- 
-        dnsLookup: (address, callback) => callback(null, address),
+    { 
+        scaleReads: 'slave', // Optional: for read scaling
+        slotsRefreshTimeout: 10000,
+        enableAutoPipelining: true,
+        // dnsLookup: (address, callback) => callback(null, address),
         redisOptions: {
-          tls: envVariables.USE_TLS === 'true' ? {} : undefined,
+          tls: {
+            checkServerIdentity: () => undefined,
+          },
           connectTimeout: 10000,
         }, 
-        scaleReads: 'slave', // Optional: for read scaling
-        slotsRefreshTimeout: 2000,
-        slotsRefreshInterval: 5000,
+
     }
   );
   redisClient.on('error', (err: any) => {
