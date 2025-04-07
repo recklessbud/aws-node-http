@@ -16,7 +16,7 @@ if (envVariables.STAGE === 'prod') {
         scaleReads: 'slave', // Optional: for read scaling
         slotsRefreshTimeout: 10000,
         enableAutoPipelining: true,
-        // dnsLookup: (address, callback) => callback(null, address),
+        dnsLookup: (address, callback) => callback(null, address),
         redisOptions: {
           tls: {
             checkServerIdentity: () => undefined,
