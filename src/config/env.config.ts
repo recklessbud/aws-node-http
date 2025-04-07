@@ -5,7 +5,7 @@ const envVariables = {
   STAGE: process.env.STAGE || 'prod',
   IS_OFFLINE: process.env.IS_OFFLINE || 'false',
   REDIS_HOST: process.env.REDIS_HOST || 'localhost',
-  REDIS_PORT: process.env.REDIS_PORT || '6379',
+  REDIS_PORT: process.env.REDIS_PORT || 6379,
   ELASTICACHE_REDIS_URL: process.env.ELASTICACHE_REDIS_URL || '',
   USE_TLS: process.env.USE_TLS || 'true',
 };
