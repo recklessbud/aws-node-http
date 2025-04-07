@@ -24,13 +24,6 @@ provider:
     metrics: true
     shouldStartNameWithService: true
     minimumCompressionSize: 1024
-  vpc:
-    securityGroupIds:
-      - sg-0bf6a786b11fd7759
-    subnetIds:
-      - subnet-087266d83f29b6de9 
-      - subnet-0a0739c11d57b4739  
-      - subnet-091b18809567a60f5
   environment:
     STAGE: ${env:STAGE, 'prod'}
 
