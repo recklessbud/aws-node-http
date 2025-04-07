@@ -17,9 +17,13 @@ if (envVariables.STAGE === 'prod') {
         dnsLookup: (address, callback) => callback(null, address),
         redisOptions: {
           tls: {},
+          connectTimeout: 10000,
         },
     }
   );
+  redisClient.on('error', (err: any) => {
+    console.error('Redis client error:', err);
+  })
 } else {
   redisClient = createClient({
     socket: {
@@ -36,5 +40,6 @@ if (envVariables.STAGE === 'prod') {
     console.log('Redis client connected locally');
   });  
 }
+console.log(envVariables.ELASTICACHE_REDIS_URL)
 
 export default redisClient;
