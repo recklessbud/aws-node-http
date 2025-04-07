@@ -38,8 +38,28 @@ provider:
             - "ssm:GetParameterHistory"
             - "ssm:GetParametersByPath"
             - "ssm:GetParameters"
+            - "ec2:DescribeRegions"	
+            - "ec2:CreateNetworkInterface"
+            - "ec2:DeleteNetworkInterface"
+            - "ec2:DescribeNetworkInterfaces"
+            - "logs:CreateLogGroup"
+            - "logs:CreateLogStream"
+            - "logs:PutLogEvents"
           Resource: "*"
-
+  vpc:
+    securityGroupIds:
+      - sg-0bf6a786b11fd7759
+      - sg-0c6546935ce0a182d
+      - sg-0e0ba72a6f73c4ba8
+      - sg-07bc790d189347de3
+      - sg-0c61d328c8947a508
+    subnetIds:
+      - subnet-087266d83f29b6de9
+      - subnet-0c4f12559e2ae2e57
+      - subnet-06fbc36506384f7f9
+      - subnet-0a0739c11d57b4739
+      - subnet-091b18809567a60f5
+      - subnet-050f46c1fe2c68048
 
 functions:
   hello:
