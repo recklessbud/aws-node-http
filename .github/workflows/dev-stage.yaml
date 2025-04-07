@@ -57,9 +57,9 @@ jobs:
     - name: Run Migrations
       run: |
         npx prisma migrate deploy
-    # - name: Remove dev stage
-    #   run: |
-    #     npm run remove:dev
+    - name: Remove dev stage
+      run: |
+        npm run remove:dev
     - name: serverless package
       run: |
         npm run package:dev
