@@ -13,12 +13,15 @@ if (envVariables.STAGE === 'prod') {
       },
     ],
     {
-        scaleReads: 'slave', // Optional: for read scaling
+ 
         dnsLookup: (address, callback) => callback(null, address),
         redisOptions: {
-          tls: {},
+          tls: envVariables.USE_TLS === 'true' ? {} : undefined,
           connectTimeout: 10000,
-        },
+        }, 
+        scaleReads: 'slave', // Optional: for read scaling
+        slotsRefreshTimeout: 2000,
+        slotsRefreshInterval: 5000,
     }
   );
   redisClient.on('error', (err: any) => {
