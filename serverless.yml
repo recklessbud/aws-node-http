@@ -26,6 +26,7 @@ provider:
     minimumCompressionSize: 1024
   environment:
     STAGE: ${env:STAGE, 'prod'}
+    ELASTICACHE_REDIS_URL: ${env:ELASTICACHE_REDIS_URL, 'first-cache-bmgb88.serverless.use1.cache.amazonaws.com'}
 
   iam:
     role:

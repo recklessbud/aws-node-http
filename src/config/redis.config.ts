@@ -13,13 +13,20 @@ if (envVariables.STAGE === 'prod') {
       },
     ],
     {
-        scaleReads: 'slave', // Optional: for read scaling
+ 
         dnsLookup: (address, callback) => callback(null, address),
         redisOptions: {
-          tls: {},
-        },
+          tls: envVariables.USE_TLS === 'true' ? {} : undefined,
+          connectTimeout: 10000,
+        }, 
+        scaleReads: 'slave', // Optional: for read scaling
+        slotsRefreshTimeout: 2000,
+        slotsRefreshInterval: 5000,
     }
   );
+  redisClient.on('error', (err: any) => {
+    console.error('Redis client error:', err);
+  })
 } else {
   redisClient = createClient({
     socket: {
@@ -36,5 +43,6 @@ if (envVariables.STAGE === 'prod') {
     console.log('Redis client connected locally');
   });  
 }
+console.log(envVariables.ELASTICACHE_REDIS_URL)
 
 export default redisClient;
