@@ -88,6 +88,7 @@ package:
     # - "!node_modules/**
     - "!test/**"
     - "!tests/**"
+    - "!node_modules/redis-clustr/node_modules/redis-parser/lib/hiredis.js"
     - "src/views/**"
     - "node_modules/ejs/**"
     - "src/views/**/*.ejs"
@@ -96,6 +97,10 @@ package:
     - "node_modules/json-schema-traverse/**"
     - "node_modules/fast-deep-equal/**"
     - "node_modules/uri-js/**"
+    - "node_modules/ioredis/**"
+    - "!node_modules/**/*.md"
+    - "!node_modules/**/*.txt"
+    - "!node_modules/**/*.map"
 
 plugins:
   - serverless-offline
@@ -121,7 +126,12 @@ custom:
     sourceMap: linked
     exclude:
       - aws-sdk
+      - redis-clustr
+      - ioredis
     target: node20
     platform: node
     concurrency: 10
+    external:
+      - redis-clustr
+      - ioredis
 
