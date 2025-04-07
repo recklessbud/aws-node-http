@@ -32,6 +32,7 @@ export const postToDb = async (req: Request, res: Response, next: NextFunction) 
 
     if (existingUrl) {
      errorResponse(res, 400).render("index", {shortUrl: `${req.protocol}://${req.get('host')}/v1/${existingUrl.shortUrl}` })
+     return
     }
 
     const shortenedUrl = Math.random().toString(36).substring(2, 8);
