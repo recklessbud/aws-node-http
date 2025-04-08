@@ -53,9 +53,9 @@ provider:
     securityGroupIds:
       - sg-0bf6a786b11fd7759
       - sg-0c6546935ce0a182d
-      - sg-0e0ba72a6f73c4ba8
-      - sg-07bc790d189347de3
       - sg-0c61d328c8947a508
+      - sg-001c9fe9c9e4ef3e5
+      - sg-07569f6af3e7576d3
     subnetIds:
       - subnet-087266d83f29b6de9
       - subnet-0c4f12559e2ae2e57
