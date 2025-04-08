@@ -12,23 +12,37 @@ if (envVariables.STAGE === 'prod') {
         port: 6379,
       },
     ],
-    { 
-        scaleReads: 'slave', // Optional: for read scaling
-        slotsRefreshTimeout: 10000,
-        enableAutoPipelining: true,
-        dnsLookup: (address, callback) => callback(null, address),
-        redisOptions: {
-          tls: {
-            checkServerIdentity: () => undefined,
-          },
-          connectTimeout: 10000,
-        }, 
-
+   {
+    dnsLookup: (address, callback) => {
+     return callback(null, address);
+    },
+    redisOptions: {
+      tls: {}
     }
+   }
   );
   redisClient.on('error', (err: any) => {
     console.error('Redis client error:', err);
   })
+  redisClient.on('connect', () => {
+    console.log('Successfully connected to Redis cluster');
+  });
+
+  redisClient.on('ready', () => {
+    console.log('Redis cluster is ready to receive commands');
+  });
+
+  redisClient.on('close', () => {
+    console.log('Redis cluster connection closed');
+  });
+
+  redisClient.on('reconnecting', () => {
+    console.log('Reconnecting to Redis cluster...');
+  });
+
+  redisClient.on('node error', (error: Error, node: any) => {
+    console.error(`Redis Cluster Node ${node.options.host}:${node.options.port} encountered an error:`, error);
+  });
 } else {
   redisClient = createClient({
     socket: {
