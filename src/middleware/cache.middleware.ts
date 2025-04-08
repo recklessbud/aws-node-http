@@ -28,7 +28,7 @@ export const cacheMiddleware = (durationInSeconds: number) => {
       const originalRedirect = res.redirect.bind(res);
 
       res.redirect = function (url: any) {
-        redisClient.setEx(cacheKey, durationInSeconds, url)
+        redisClient.setex(cacheKey, durationInSeconds, url)
           .then(() => console.log(`✅ Cached redirect for ${shortId} -> ${url}`))
           .catch((err: any) => console.error(`❌ Failed to cache ${shortId}`, err));
 
