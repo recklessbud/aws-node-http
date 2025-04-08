@@ -39,10 +39,6 @@ if (envVariables.STAGE === 'prod') {
   redisClient.on('reconnecting', () => {
     console.log('Reconnecting to Redis cluster...');
   });
-
-  redisClient.on('node error', (error: Error, node: any) => {
-    console.error(`Redis Cluster Node ${node.options.host}:${node.options.port} encountered an error:`, error);
-  });
 } else {
   redisClient = createClient({
     socket: {
