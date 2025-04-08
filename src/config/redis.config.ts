@@ -13,32 +13,16 @@ if (envVariables.STAGE === 'prod') {
       },
     ],
    {
+    enableAutoPipelining: true,
     dnsLookup: (address, callback) => {
      return callback(null, address);
     },
     redisOptions: {
-      tls: {}
+      tls: {},
+      connectTimeout: 10000,
     }
    }
   );
-  redisClient.on('error', (err: any) => {
-    console.error('Redis client error:', err);
-  })
-  redisClient.on('connect', () => {
-    console.log('Successfully connected to Redis cluster');
-  });
-
-  redisClient.on('ready', () => {
-    console.log('Redis cluster is ready to receive commands');
-  });
-
-  redisClient.on('close', () => {
-    console.log('Redis cluster connection closed');
-  });
-
-  redisClient.on('reconnecting', () => {
-    console.log('Reconnecting to Redis cluster...');
-  });
 } else {
   redisClient = createClient({
     socket: {
