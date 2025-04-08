@@ -1,44 +1,24 @@
-import { createClient } from 'redis';
-import { Cluster } from 'ioredis';
-import envVariables from './env.config'; // Adjust path as needed
+import Redis from "ioredis";
 
-let redisClient: any;
-
-if (envVariables.STAGE === 'prod') {
-  redisClient = new Cluster(
-    [
-      {
-        host: envVariables.ELASTICACHE_REDIS_URL,
-        port: 6379,
-      },
-    ],
-   {
-    enableAutoPipelining: true,
-    dnsLookup: (address, callback) => {
-     return callback(null, address);
-    },
+const client = new Redis.Cluster(
+  [{
+    host: process.env.ELASTICACHE_REDIS_URL || 'clustercfg.cluster0.bmgb88.use1.cache.amazonaws.com',
+    port: 6379
+  }],
+  {
+    dnsLookup: (address, callback) => callback(null, address),
     redisOptions: {
       tls: {},
-      connectTimeout: 10000,
-    }
-   }
-  );
-} else {
-  redisClient = createClient({
-    socket: {
-      host: process.env.REDIS_HOST || 'localhost',
-      port: Number(process.env.REDIS_PORT) || 6379,
-    },
-  });
+      connectTimeout: 20000,
 
-  redisClient.on('error', (err: any) => {
-    console.error('Redis client error:', err);
-  });
+    },   
+    clusterRetryStrategy: (times) => Math.min(times * 100, 2000),
+    slotsRefreshTimeout: 2000,
+    enableReadyCheck: true, 
+  }
+);
 
-  redisClient.connect().then(() => {
-    console.log('Redis client connected locally');
-  });  
-}
-console.log(envVariables.ELASTICACHE_REDIS_URL)
+client.on('error', (err) => console.error('Redis Client Error:', err));
+client.on('connect', () => console.log('Successfully connected to Redis'));
 
-export default redisClient;
+export default client;
