@@ -9,8 +9,8 @@ const client = new Redis.Cluster(
     dnsLookup: (address, callback) => callback(null, address),
     redisOptions: {
       tls: {},
-      connectTimeout: 20000,
-      commandTimeout: 20000,
+      connectTimeout: 50000,
+      commandTimeout: 50000,
 
     },   
     clusterRetryStrategy: (times) => Math.min(times * 100, 2000),
