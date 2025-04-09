@@ -10,6 +10,7 @@ const client = new Redis.Cluster(
     redisOptions: {
       tls: {},
       connectTimeout: 20000,
+      commandTimeout: 20000,
 
     },   
     clusterRetryStrategy: (times) => Math.min(times * 100, 2000),
