@@ -97,7 +97,6 @@ package:
     # - "!node_modules/**
     - "!test/**"
     - "!tests/**"
-    - "!node_modules/redis-clustr/node_modules/redis-parser/lib/hiredis.js"
     - "src/views/**"
     - "node_modules/ejs/**"
     - "src/views/**/*.ejs"
