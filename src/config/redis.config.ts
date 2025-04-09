@@ -1,25 +1,48 @@
-import Redis from "ioredis";
+import Redis from 'ioredis';
+import envVariables from './env.config';
 
-const client = new Redis.Cluster(
-  [{
-    host: process.env.ELASTICACHE_REDIS_URL || 'clustercfg.cluster0.bmgb88.use1.cache.amazonaws.com',
-    port: 6379
-  }],
-  {
-    dnsLookup: (address, callback) => callback(null, address),
-    redisOptions: {
-      tls: {},
-      connectTimeout: 50000,
-      commandTimeout: 50000,
+interface RedisNode {
+  host: string;
+  port: number;
+}
 
-    },   
-    clusterRetryStrategy: (times) => Math.min(times * 100, 2000),
-    slotsRefreshTimeout: 2000,
-    enableReadyCheck: true, 
-  }
-);
+// Your cluster nodes
+const nodes: RedisNode[] = [
+  // Add your actual Redis nodes here
+  { host: envVariables.ELASTICACHE_REDIS_URL, port: 6379 },
+  { host: envVariables.ELASTICACHE_REDIS_URL, port: 6379 },
+  // ...add all nodes
+];
 
-client.on('error', (err) => console.error('Redis Client Error:', err));
-client.on('connect', () => console.log('Successfully connected to Redis'));
+const cluster = new Redis.Cluster(nodes, {
+  clusterRetryStrategy: (times: number): number => {
+    // More robust retry strategy
+    const delay = Math.min(times * 200, 5000);
+    console.log(`Retrying connection, attempt ${times}, delay: ${delay}ms`);
+    return delay;
+  },
+  redisOptions: {
+    connectTimeout: 15000,  // Longer connection timeout
+    commandTimeout: 10000,  // Command timeout
+    reconnectOnError: (err: Error): boolean => {
+      console.log('Redis error:', err);
+      // Reconnect on specific errors, like READONLY
+      return err.message.includes('READONLY');
+    }
+  },
+  maxRedirections: 10  // Increase redirections limit
+});
 
-export default client;
+// Error handling
+cluster.on('error', (err: Error) => {
+  console.error('Redis Cluster Error:', err);
+});
+
+cluster.on('node error', (err: Error, node: any) => {
+  console.error(`Redis Node Error (${node.options.host}:${node.options.port}):`, err);
+});
+
+cluster.on('connect', (node: any) => {
+  console.log(`Connected to Redis Node: ${node.options.host}:${node.options.port}`);
+});
+export default cluster
