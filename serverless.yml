@@ -18,13 +18,16 @@ provider:
   timeout: 20
   httpApi:
     cors: true
-    binaryMediaTypes:
-      - "*/*"
   apiGateway:
     metrics: true
     shouldStartNameWithService: true
     minimumCompressionSize: 1024
+  logRetentionInDays: ${self:custom.logRetentionInDays}
+  deploymentBucket:
+    blockPublicAccess: true
+    versioning: true
   environment:
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
     STAGE: ${env:STAGE, 'prod'}
     ELASTICACHE_REDIS_URL: ${env:ELASTICACHE_REDIS_URL, 'clustercfg.cluster0.bmgb88.use1.cache.amazonaws.com'}
 
@@ -46,10 +49,13 @@ provider:
             - "logs:CreateLogGroup"
             - "logs:CreateLogStream"
             - "logs:PutLogEvents"
+            - "xray:PutTraceSegments"
+            - "xray:PutTelemetryRecords"
+            - "elasticache:DescribeCacheClusters"
+            - "elasticache:DescribeCacheSubnets"
+            - "elasticache:DescribeReplicationGroups"
           Resource: "*"
   vpc:
-    vpcId: 
-      - vpc-0a0c3f0ca1e6e6a01
     securityGroupIds:
       - sg-0bf6a786b11fd7759
       - sg-0c6546935ce0a182d
@@ -112,7 +118,10 @@ plugins:
   - serverless-dotenv-plugin
 
 custom:
-  
+  logRetentionInDays: 14'
+  prune: 
+    automatic: true
+    number: 3
   serverless-offline:
     httpPort: 4000
     lambdaPort: 4002
