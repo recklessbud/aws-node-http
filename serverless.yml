@@ -118,7 +118,7 @@ plugins:
   - serverless-dotenv-plugin
 
 custom:
-  logRetentionInDays: 14'
+  logRetentionInDays: 14
   prune: 
     automatic: true
     number: 3
