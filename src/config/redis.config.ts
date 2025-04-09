@@ -39,10 +39,10 @@ cluster.on('error', (err: Error) => {
 });
 
 cluster.on('node error', (err: Error, node: any) => {
-  console.error(`Redis Node Error (${node.options.host}:${node.options.port}):`, err);
+  console.error(`Redis Node Error:`, err);
 });
 
 cluster.on('connect', (node: any) => {
-  console.log(`Connected to Redis Node: ${node.options.host}:${node.options.port}`);
+  console.log(`Connected to Redis Node`);
 });
 export default cluster
