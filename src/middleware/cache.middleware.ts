@@ -1,44 +1,47 @@
-// import { Request, Response, NextFunction } from 'express';
-// import redisClient from '../config/redis.config';
-// import envVariables from '../config/env.config';
+import { Request, Response, NextFunction } from 'express';
+import { redisClient } from '../config/redis.config';
 
-// // /**
-// //  * Cache middleware
-// //  * @param {number} duration - The duration in seconds of the cache
-// //  * @returns {function(Request, Response, NextFunction)} - The middleware function
-// //  */
-// const {ELASTICACHE_REDIS_URL} = envVariables
-// export const cacheMiddleware = (durationInSeconds: number) => {
-//   return async (req: Request, res: Response, next: NextFunction) => {
-//     try {
-//       const { shortId } = req.params;
+export const cacheMiddleware = (durationInSeconds: number) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    // Add timeout promise
+    const timeout = (ms: number) => new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Redis operation timed out')), ms)
+    );
 
-//       if (!shortId) return next(); // If no shortId, skip
+    try {
+      const { shortId } = req.params;
 
-//       const cacheKey = `shorturl:${shortId}`;
+      if (!shortId) return next();
 
-//       // Try to get cached original URL
-//       const cachedUrl = await redisClient.get(cacheKey);
-//       if (cachedUrl) {
-//         console.log(`🔁 Cache hit for ${shortId} -> ${cachedUrl}`);
-//         return res.redirect(cachedUrl); // Stop here if cached
-//       }
+      const cacheKey = `shorturl:${shortId}`;
 
-//       // Intercept res.redirect to cache the redirect target
-//       const originalRedirect = res.redirect.bind(res);
+      const cachedUrl = await Promise.race([
+        redisClient.get(cacheKey),
+        timeout(5000)
+      ]);
 
-//       res.redirect = function (url: any) {
-//         redisClient.setex(cacheKey, durationInSeconds, url)
-//           .then(() => console.log(`✅ Cached redirect for ${shortId} -> ${url}`))
-//           .catch((err: any) => console.error(`❌ Failed to cache ${shortId}`, err));
+      if (cachedUrl) {
+        console.log(`🔁 Cache hit for ${shortId} -> ${cachedUrl}`);
+        return res.redirect(cachedUrl as string);
+      }
 
-//         return originalRedirect(url); // Call the original redirect
-//       };
+      const originalRedirect = res.redirect.bind(res);
+      res.redirect = function (url: any) {
+        Promise.race([
+          redisClient.setex(cacheKey, durationInSeconds, url),
+          timeout(5000)
+        ])
+          .then(() => console.log(`✅ Cached redirect for ${shortId} -> ${url}`))
+          .catch((err: any) => console.error(`❌ Failed to cache ${shortId}`, err));
 
-//       next(); // Go to the controller logic
-//     } catch (err) {
-//       console.error('❌ Redis cache middleware error:', err);
-//       next(); // Continue without cache on error
-//     }
-//   };
-// };
+        return originalRedirect(url);
+      };
+
+      next();
+    } catch (err) {
+      console.error('❌ Redis cache middleware error:', err);
+      // Continue without cache on error
+      next();
+    }
+  };
+};

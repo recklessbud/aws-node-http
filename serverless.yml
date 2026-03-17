@@ -1,21 +1,20 @@
 # "org" ensures this Service is used with the correct Serverless Framework Access Key.
-org: bureck
+org: smoke20
 # "service" is the name of this project. This will also be added to your AWS resource names.
 app: aws-node-http-start
 service: aws-node-http-start
 useDotenv: true
 
-
 provider:
   name: aws
   runtime: nodejs20.x
   stage: dev
-  region: us-east-1
+  region: eu-north-1
   tracing:
     apiGateway: true
     lambda: true
   memorySize: 512
-  timeout: 20
+  timeout: 100
   httpApi:
     cors: true
   apiGateway:
@@ -29,54 +28,49 @@ provider:
   environment:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
     STAGE: ${env:STAGE, 'prod'}
-    ELASTICACHE_REDIS_URL: ${env:ELASTICACHE_REDIS_URL, 'clustercfg.cluster0.bmgb88.use1.cache.amazonaws.com'}
+    ELASTICACHE_REDIS_URL: ${env:ELASTICACHE_REDIS_URL}
+    DATABASE_URL: ${env:DATABASE_URL}
+    DIRECT_URL: ${env:DIRECT_URL}
+
+    
 
   iam:
     role:
       name:  ${self:service}-lambda-role-${env:STAGE, 'prod'}
       statements:
         - Effect: Allow
-          Action:
-            - "ssm:DescribeParameters"
-            - "ssm:GetParameter"
-            - "ssm:GetParameterHistory"
-            - "ssm:GetParametersByPath"
-            - "ssm:GetParameters"
-            - "ec2:DescribeRegions"	
-            - "ec2:CreateNetworkInterface"
-            - "ec2:DeleteNetworkInterface"
-            - "ec2:DescribeNetworkInterfaces"
-            - "logs:CreateLogGroup"
-            - "logs:CreateLogStream"
-            - "logs:PutLogEvents"
-            - "xray:PutTraceSegments"
-            - "xray:PutTelemetryRecords"
-            - "elasticache:DescribeCacheClusters"
-            - "elasticache:DescribeCacheSubnets"
-            - "elasticache:DescribeReplicationGroups"
+          Action: '*'
+            # - "ssm:DescribeParameters"
+            # - "ssm:GetParameter"
+            # - "ssm:GetParameterHistory"
+            # - "ssm:GetParametersByPath"
+            # - "ssm:GetParameters"
+            # - "ec2:DescribeRegions"	
+            # - "ec2:CreateNetworkInterface"
+            # - "ec2:DeleteNetworkInterface"
+            # - "ec2:DescribeNetworkInterfaces"
+            # - "logs:CreateLogGroup"
+            # - "logs:CreateLogStream"
+            # - "logs:PutLogEvents"
+            # - "xray:PutTraceSegments"
+            # - "xray:PutTelemetryRecords"
+            # - "elasticache:DescribeCacheClusters"
+            # - "elasticache:DescribeCacheSubnets"
+            # - "elasticache:DescribeReplicationGroups"
           Resource: "*"
-  vpc:
-    securityGroupIds:
-      - sg-0bf6a786b11fd7759
-      - sg-0c6546935ce0a182d
-      - sg-0c61d328c8947a508
-      - sg-001c9fe9c9e4ef3e5
-      - sg-07569f6af3e7576d3
-    subnetIds:
-      - subnet-087266d83f29b6de9
-      - subnet-0c4f12559e2ae2e57
-      - subnet-06fbc36506384f7f9
-      - subnet-0a0739c11d57b4739
-      - subnet-091b18809567a60f5
-      - subnet-050f46c1fe2c68048
 
 functions:
   hello:
     handler: src/index.handler
     events: 
     - httpApi: "*"
-    timeout: 10
+    timeout: 100
     memorySize: 256
+    environment:
+      ELASTICACHE_REDIS_URL: ${env:ELASTICACHE_REDIS_URL}
+      DATABASE_URL: ${env:DATABASE_URL}
+      DIRECT_URL: ${env:DIRECT_URL}
+
     tags:
       Function: hello
 
@@ -101,14 +95,14 @@ package:
     - "node_modules/ejs/**"
     - "src/views/**/*.ejs"
     - "src/views/*/**"
-    - "node_modules/ajv/**"
-    - "node_modules/json-schema-traverse/**"
-    - "node_modules/fast-deep-equal/**"
-    - "node_modules/uri-js/**"
-    - "node_modules/ioredis/**"
-    - "!node_modules/**/*.md"
-    - "!node_modules/**/*.txt"
-    - "!node_modules/**/*.map"
+    # - "node_modules/ajv/**"
+    # - "node_modules/json-schema-traverse/**"
+    # - "node_modules/fast-deep-equal/**"
+    # - "node_modules/uri-js/**"
+    # - "node_modules/ioredis/**"
+    # - "!node_modules/**/*.md"
+    # - "!node_modules/**/*.txt"
+    # - "!node_modules/**/*.map"
 
 plugins:
   - serverless-offline
@@ -137,12 +131,6 @@ custom:
     sourceMap: linked
     exclude:
       - aws-sdk
-      - redis-clustr
-      - ioredis
     target: node20
     platform: node
     concurrency: 10
-    external:
-      - redis-clustr
-      - ioredis
-

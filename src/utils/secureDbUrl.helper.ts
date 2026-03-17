@@ -13,7 +13,7 @@ interface DbUrls{
 export async function getSecureDbUrl(){
   const DATABASE_URL_SSM_PARAM=`/serverless-demo/${stage}/database-url`
   const DIRECT_URL_SSM_PARAM=`/serverless-demo/${stage}/direct-url`   
-  const client = new SSMClient({ region: 'us-east-1' });
+  const client = new SSMClient({ region: process.env.AWS_REGION || 'eu-north-1' });
   const paramStore = [
     new GetParameterCommand({
     Name: DATABASE_URL_SSM_PARAM,
@@ -43,7 +43,7 @@ export async function getSecureDbUrl(){
   const DATABASE_URL_SSM_PARAM=`/serverless-demo/${stages}/database-url`
   const DIRECT_URL_SSM_PARAM=`/serverless-demo/${stages}/direct-url`   
   const SecureString = "SecureString" as any
-  const client = new SSMClient({ region: 'us-east-1' });
+  const client = new SSMClient({ region: process.env.AWS_REGION || 'eu-north-1' });
   const paramStore = [
    new PutParameterCommand ({
     Name: DATABASE_URL_SSM_PARAM,
